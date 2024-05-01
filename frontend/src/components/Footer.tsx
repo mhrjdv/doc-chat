@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
           <div className="inline-flex items-center">
             {/* <CloudIcon className="w-5 h-5 mr-1.5" /> */}
             <a href="https://www.linkedin.com/in/-mihirjadhav">
-            Developed by Mihir Jadhav
+            Developed by <b>Mihir Jadhav</b>
             </a>
           </div>
           {/* <div className="inline-flex items-center hover:underline underline-offset-2">
