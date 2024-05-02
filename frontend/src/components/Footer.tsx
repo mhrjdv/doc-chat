@@ -3,9 +3,9 @@
 
 const Footer: React.FC = () => {
   return (
-    <div className="bg-gray-100 mt-auto">
+    <div className="bg-gray-100 mt-auto fixed inset-x-0 bottom-0">
       <footer className="container">
-        <div className=" flex flex-row justify-center py-3 text-sm">
+        <div className=" flex flex-row justify-center py-3 text-sm ">
           <div className="inline-flex items-center">
             {/* <CloudIcon className="w-5 h-5 mr-1.5" /> */}
             <a href="https://www.linkedin.com/in/-mihirjadhav">

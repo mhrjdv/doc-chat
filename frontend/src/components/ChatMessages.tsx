@@ -1,52 +1,98 @@
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import Loading from "../../public/loading-dots.svg";
 import { Conversation } from "../common/types";
+import React, { useRef, useEffect } from "react";
 
 interface ChatMessagesProps {
   conversation: Conversation;
   messageStatus: string;
-  handlePromptChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  handlePromptChange: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void;
+  handleKeyPress: (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => void;
   prompt: string;
   submitMessage: () => Promise<void>;
 }
 
-const ChatMessages: React.FC<ChatMessagesProps> = ({
+
+const ChatMessages: React.FC<
+  ChatMessagesProps
+> = ({
   prompt,
   conversation,
   messageStatus,
   submitMessage,
   handlePromptChange,
-  handleKeyPress,
 }) => {
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (prompt.trim()) {
+      await submitMessage();
+      scrollToBottom();
+    }
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation.messages, messageStatus]);
+
+
   return (
-    <div className="flex flex-col justify-between h-full overflow-y-auto col-span-8 p-5 border-l border-gray-200">
-      <div className="pb-5">
-        <div className="grid gap-5">
-          {conversation.messages.map((message, i) => (
-            <div
-              className={`${
-                message.type === "ai"
-                  ? "justify-self-start w-fit rounded border border-gray-100 px-5 py-3.5 text-gray-800"
-                  : "" +
-                    "justify-self-end w-fit bg-slate-100 rounded border border-gray-100 px-5 py-3.5 text-gray-800"
-              }`}
-              key={i}
-            >
-              <div className="prose">
-                <p>{message.data.content}</p>
+    <div
+      className="flex flex-col justify-between h-full col-span-8 border-l border-gray-200"
+      style={{ maxHeight: "calc(100vh - 145px)" }}
+    >
+      <div
+        className="overflow-y-auto p-5"
+        style={{ height: "calc(100% - 60px)" }}
+      >
+        <div className="pb-5">
+          <div className="grid gap-5">
+            {conversation.messages.map(
+              (message, i) => (
+                <div
+                  className={`${
+                    message.type === "ai"
+                      ? "justify-self-start"
+                      : "justify-self-end"
+                  } w-fit rounded border border-gray-100 px-5 py-3.5 text-gray-800`}
+                  key={i}
+                >
+                  <div className="prose">
+                    <p>{message.data.content}</p>
+                  </div>
+                </div>
+              )
+            )}
+            {messageStatus === "loading" && (
+              <div className="justify-self-start w-fit rounded border border-gray-100 px-5 py-3.5 text-gray-800">
+                <img
+                  src={Loading}
+                  width={40}
+                  className="py-2 mx-2"
+                />
               </div>
-            </div>
-          ))}
-          {messageStatus === "loading" && (
-            <div className="justify-self-start w-fit rounded border border-gray-100 px-5 py-3.5 text-gray-800">
-              <img src={Loading} width={40} className="py-2 mx-2" />
-            </div>
-          )}
+            )}
+          </div>
         </div>
+        <div ref={messagesEndRef} />
       </div>
 
-      <div className="relative w-full">
+      <div className="relative w-full p-5">
         <div className="relative">
           <input
             disabled={messageStatus === "loading"}
@@ -61,14 +107,17 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 : "block w-full p-4 pl-4 text-sm text-gray-900 border border-gray-200 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
             }
             placeholder={
-              "Ask " + conversation.document.filename + " anything..."
+              "Ask " +
+              conversation.document.filename +
+              " anything..."
             }
           />
           {messageStatus === "idle" && (
             <button
               type="submit"
               className="text-gray-700 absolute right-2 bottom-2 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
-              onClick={submitMessage}
+              // onClick={submitMessage}
+              onClick={handleSendMessage}
             >
               <PaperAirplaneIcon className="w-6 h-6" />
             </button>
