@@ -19,7 +19,7 @@ This application allows users to ask natural language questions of any PDF docum
 - [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) for serverless conversational memory.
 - [AWS Lambda](https://aws.amazon.com/lambda/) for serverless compute.
 - Frontend built with [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [TailwindCSS](https://tailwindcss.com/), and [Vite](https://vitejs.dev/).
-- Local run support and deployment options with [AWS Amplify Hosting](https://aws.amazon.com/amplify/hosting/).
+- Local run support and deployment options with [Vercel Hosting](https://vercel.com/).
 - [Amazon Cognito](https://aws.amazon.com/cognito/) for authentication.
 
 ## How It Works
